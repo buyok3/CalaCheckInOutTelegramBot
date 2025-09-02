@@ -51,14 +51,14 @@ public class Bot extends TelegramLongPollingBot {
 
             if(text != null) {
                 if (!text.equalsIgnoreCase(checkIn) && !text.equalsIgnoreCase(checkOut)) {
-                    personalAnswer = "Choose on of the options on the keyboard!\n" + chatId;
+                    personalAnswer = "Choose on of the options on the keyboard!";
                 } else if (isCheckedIn == CheckedIn.CHECKED_OUT) {
                     kb = getCheckOutKeyboard();
-                    personalAnswer = "Welcome!\nHave a nice day!\n";
+                    personalAnswer = "Welcome!\nHave a nice day!";
                     swapCheckedInStatus();
                 } else {
                     kb = getCheckInKeyboard();
-                    personalAnswer = "Thank you for work!\nSee you tomorrow!\n";
+                    personalAnswer = "Thank you for work!\nSee you tomorrow!";
                     swapCheckedInStatus();
                 }
             }
@@ -67,8 +67,18 @@ public class Bot extends TelegramLongPollingBot {
                 Location userLocation = msg.getLocation();
                 latitude = userLocation.getLatitude();
                 longitude = userLocation.getLongitude();
-
-                System.out.println(calculateDistance(latitude, longitude, calaLatitude, calaLongitude));
+                Double distance = calculateDistance(calaLatitude, calaLongitude, latitude, longitude) * 1000;
+                if (distance <= 100) {
+                    if (isCheckedIn == CheckedIn.CHECKED_OUT) {
+                        kb = getCheckOutKeyboard();
+                        personalAnswer = "Welcome to CALA!\nHave a nice day!";
+                        swapCheckedInStatus();
+                    } else {
+                        kb = getCheckInKeyboard();
+                        personalAnswer = "Thank you for work!\nSee you tomorrow!";
+                        swapCheckedInStatus();
+                    }
+                }
                 // Check if near restaurant
                 // If close -> check-in/out
                 // Send message to group
