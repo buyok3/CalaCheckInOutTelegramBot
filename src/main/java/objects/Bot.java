@@ -1,5 +1,6 @@
 package objects;
 
+import java.util.ArrayList;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -10,11 +11,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import types.CheckedIn;
 
-import java.util.ArrayList;
 
 public class Bot extends TelegramLongPollingBot {
     private static final String checkIn = "Check-in";
     private static final String checkOut = "Check-out";
+    private static final String groupId = "-4958090717";
 
     private static ReplyKeyboardMarkup kb = initializeKeyboard();
     private static CheckedIn isCheckedIn = CheckedIn.CHECKED_OUT;
@@ -38,26 +39,38 @@ public class Bot extends TelegramLongPollingBot {
         String text = msg.getText();
         String chatId = msg.getChatId().toString();
 
-        String answer;
+        String personalAnswer;
+        String groupAnswer;
         if (!text.equalsIgnoreCase(checkIn) && !text.equalsIgnoreCase(checkOut)) {
-            answer = "Choose on of the options on the keyboard!\n" + chatId;
+            personalAnswer = "Choose on of the options on the keyboard!\n" + chatId;
 
         } else if (isCheckedIn == CheckedIn.CHECKED_OUT) {
             kb = getCheckOutKeyboard();
-            answer = "Welcome!\nHave a nice day!";
+            personalAnswer = "Welcome!\nHave a nice day!";
             swapCheckedInStatus();
         } else {
             kb = getCheckInKeyboard();
-            answer = "Thank you for work!\nSee you tomorrow!";
+            personalAnswer = "Thank you for work!\nSee you tomorrow!";
             swapCheckedInStatus();
         }
 
+        // Send personal message
         try {
-            SendMessage message = SendMessage.builder()
+            SendMessage personalMessage = SendMessage.builder()
                     .chatId(chatId)
                     .replyMarkup(kb)
-                    .text(answer).build();
-            execute(message);
+                    .text(personalAnswer).build();
+            execute(personalMessage);
+        } catch (TelegramApiException e) {
+            System.out.println(e);
+        }
+
+        // Send group message
+        try {
+            SendMessage groupMessage = SendMessage.builder()
+                    .chatId(groupId)
+                    .text("SEX").build();
+            execute(groupMessage);
         } catch (TelegramApiException e) {
             System.out.println(e);
         }
