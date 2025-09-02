@@ -68,10 +68,13 @@ public class Bot extends TelegramLongPollingBot {
                 latitude = userLocation.getLatitude();
                 longitude = userLocation.getLongitude();
                 Double distance = calculateDistance(calaLatitude, calaLongitude, latitude, longitude) * 1000;
-                if (distance <= 100) {
+                // Check if near restaurant
+                if (distance <= 50) {
                     if (isCheckedIn == CheckedIn.CHECKED_OUT) {
                         kb = getCheckOutKeyboard();
                         personalAnswer = "Welcome to CALA!\nHave a nice day!";
+                        // check if person is on time
+                        groupAnswer = "";
                         swapCheckedInStatus();
                     } else {
                         kb = getCheckInKeyboard();
@@ -79,7 +82,9 @@ public class Bot extends TelegramLongPollingBot {
                         swapCheckedInStatus();
                     }
                 }
-                // Check if near restaurant
+                else {
+                    personalAnswer = "Get closer to restaurant to " + ((isCheckedIn) == CheckedIn.CHECKED_IN ? "check-in!" : "check-out!");
+                }
                 // If close -> check-in/out
                 // Send message to group
                 // If not -> send personal message to get closer
