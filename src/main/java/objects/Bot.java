@@ -40,7 +40,7 @@ public class Bot extends TelegramLongPollingBot {
 
         String answer;
         if (!text.equalsIgnoreCase(checkIn) && !text.equalsIgnoreCase(checkOut)) {
-            answer = "Choose on of the options on the keyboard!";
+            answer = "Choose on of the options on the keyboard!\n" + chatId;
 
         } else if (isCheckedIn == CheckedIn.CHECKED_OUT) {
             kb = getCheckOutKeyboard();
