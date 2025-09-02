@@ -3,6 +3,7 @@ package objects;
 import java.util.ArrayList;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Location;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -38,6 +39,9 @@ public class Bot extends TelegramLongPollingBot {
         User group = msg.getFrom();
         String text = msg.getText();
         String chatId = msg.getChatId().toString();
+        Location userLocation = msg.getLocation();
+        Double latitude = userLocation.getLatitude();
+        Double longitude = userLocation.getLongitude();
 
         String personalAnswer;
         String groupAnswer;
@@ -46,7 +50,7 @@ public class Bot extends TelegramLongPollingBot {
 
         } else if (isCheckedIn == CheckedIn.CHECKED_OUT) {
             kb = getCheckOutKeyboard();
-            personalAnswer = "Welcome!\nHave a nice day!";
+            personalAnswer = "Welcome!\nHave a nice day!\n" + latitude.toString() + "\n" + longitude.toString();
             swapCheckedInStatus();
         } else {
             kb = getCheckInKeyboard();
